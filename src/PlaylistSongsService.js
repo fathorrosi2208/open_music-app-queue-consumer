@@ -5,7 +5,7 @@ class PlaylistSongsService {
     this._pool = new Pool();
   }
 
-  async getSongsFromPlaylist(playlistId, userId) {
+  async getSongsFromPlaylist(playlistId) {
     const query = {
       text: `
         SELECT 
@@ -17,11 +17,9 @@ class PlaylistSongsService {
         FROM playlists
         LEFT JOIN playlist_songs ON playlists.id = playlist_songs.playlist_id
         LEFT JOIN songs ON playlist_songs.song_id = songs.id
-        LEFT JOIN collaborations ON playlists.id = collaborations.playlist_id
-        WHERE playlists.id = $1 
-        AND (playlists.owner = $2 OR collaborations.user_id = $2)
+        WHERE playlists.id = $1
       `,
-      values: [playlistId, userId],
+      values: [playlistId],
     };
   
     const result = await this._pool.query(query);
